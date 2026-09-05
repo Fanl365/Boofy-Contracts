@@ -5,10 +5,18 @@ import json
 import os
 import sys
 
-# Trigger revision 2: materialize the full source tree from upstream in one GitHub Actions run.
+# Trigger revision 3: materialize the full source tree from upstream in one GitHub Actions run.
 root = Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
 
 PROTECTED = '__BOOFY_EXTERNAL_ADDRESSBOOK_SCOPE__'
+
+
+def in_workflows(p: Path) -> bool:
+    try:
+        rel = p.relative_to(root)
+    except Exception:
+        return False
+    return len(rel.parts) >= 2 and rel.parts[0] == '.github' and rel.parts[1] == 'workflows'
 
 
 def rebrand_text(text: str) -> str:
@@ -27,9 +35,9 @@ def rebrand_text(text: str) -> str:
     return ''.join(out)
 
 
-# Rebrand text files. Binary files are left untouched here.
+# Rebrand text files. Binary files and workflow files are left untouched here.
 for p in list(root.rglob('*')):
-    if not p.is_file() or '.git' in p.parts:
+    if not p.is_file() or '.git' in p.parts or in_workflows(p):
         continue
     if p.name in {'LICENSE', 'LICENSE.md', 'COPYING', 'NOTICE'}:
         continue
@@ -42,8 +50,8 @@ for p in list(root.rglob('*')):
     if new != text:
         p.write_text(new, encoding='utf-8')
 
-# Rename files/directories from deepest path first.
-paths = [p for p in root.rglob('*') if '.git' not in p.parts]
+# Rename files/directories from deepest path first, excluding workflows.
+paths = [p for p in root.rglob('*') if '.git' not in p.parts and not in_workflows(p)]
 for p in sorted(paths, key=lambda x: len(x.parts), reverse=True):
     name = p.name.replace('BEEFY', 'BOOFY').replace('Beefy', 'Boofy').replace('beefy', 'boofy')
     if name != p.name and p.exists():
@@ -67,7 +75,7 @@ if pkg.exists():
 
 # Repair any protected dependency placeholders that may appear in scripts/config.
 for p in root.rglob('*'):
-    if not p.is_file() or '.git' in p.parts:
+    if not p.is_file() or '.git' in p.parts or in_workflows(p):
         continue
     try:
         text = p.read_text(encoding='utf-8')
