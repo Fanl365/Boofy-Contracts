@@ -1,3 +1,5 @@
+<p align="center"><img src="./assets/boofy-banner.svg" width="100%" alt="Boofy — Build · Connect · Grow" /></p>
+
 # Boofy Contracts
 
 Boofy Contracts contains the smart contracts, vault implementations, strategy integrations, deployment helpers, and test infrastructure for the Boofy DeFi project.
