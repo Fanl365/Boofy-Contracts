@@ -21,8 +21,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Preserve materializer
-        run: cp tools/materialize_boofy_contracts.py /tmp/materialize_boofy_contracts.py
+      - name: Preserve materializer workflow and script
+        shell: bash
+        run: |
+          cp tools/materialize_boofy_contracts.py /tmp/materialize_boofy_contracts.py
+          cp .github/workflows/materialize-boofy-contracts.yml /tmp/materialize-boofy-contracts.yml
 
       - name: Fetch upstream Beefy Contracts
         run: git clone --depth 1 https://github.com/beefyfinance/beefy-contracts.git /tmp/beefy-contracts
@@ -32,6 +35,9 @@ jobs:
         run: |
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           rsync -a --exclude='.git' /tmp/beefy-contracts/ ./
+          rm -rf .github/workflows
+          mkdir -p .github/workflows
+          cp /tmp/materialize-boofy-contracts.yml .github/workflows/materialize-boofy-contracts.yml
 
       - name: Materialize Boofy source tree
         run: python /tmp/materialize_boofy_contracts.py .
