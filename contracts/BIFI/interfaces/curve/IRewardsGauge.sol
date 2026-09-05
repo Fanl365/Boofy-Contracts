@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity >=0.6.0 <0.9.0;
+
+interface IRewardsGauge {
+    function balanceOf(address account) external view returns (uint256);
+    function claimable_reward(address _addr, address _token) external view returns (uint256);
+    function claim_rewards(address _addr) external;
+    function deposit(uint256 _value) external;
+    function withdraw(uint256 _value) external;
+    function reward_contract() external view returns (address);
+    function bal_pseudo_minter() external view returns (address);
+    function factory() external view returns (address);
+}

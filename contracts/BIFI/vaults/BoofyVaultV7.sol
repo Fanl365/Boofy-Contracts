@@ -26,7 +26,7 @@ contract BoofyVaultV7 is ERC20Upgradeable, OwnableUpgradeable, ReentrancyGuardUp
     StratCandidate public stratCandidate;
     // The strategy currently in use by the vault.
     IStrategyV7 public strategy;
-    // The minimum time it has to pass before a new strat candidate can be approved.
+    // The minimum time it has to pass before a strat candidate can be approved.
     uint256 public approvalDelay;
 
     event NewStratCandidate(address implementation);
