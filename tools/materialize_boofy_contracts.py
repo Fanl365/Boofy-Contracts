@@ -5,6 +5,7 @@ import json
 import os
 import sys
 
+# Trigger revision 2: materialize the full source tree from upstream in one GitHub Actions run.
 root = Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
 
 PROTECTED = '__BOOFY_EXTERNAL_ADDRESSBOOK_SCOPE__'
